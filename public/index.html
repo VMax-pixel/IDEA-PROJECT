@@ -62,6 +62,18 @@ textarea:focus,input:focus{outline:none;border-color:var(--plum)}
 .masonry{column-count:2;column-gap:12px;margin-top:14px}
 .tile{break-inside:avoid;margin-bottom:12px;border-radius:24px;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;width:100%;text-align:left;border:0;font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.25;box-shadow:0 8px 18px rgba(43,27,23,.12)}
 .tile small{font-family:var(--sans);font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:6px}
+.tile{position:relative;overflow:hidden;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.tile .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s}
+.tile .ph.on{opacity:1}
+.tile .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,10,12,.78),rgba(24,10,12,.06) 58%)}
+.tile small,.tile .tt{position:relative}
+#splash{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#5B2A4E,#8A3F6B 55%,#D9663A);display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;transition:opacity .6s}
+#splash.out{opacity:0;pointer-events:none}
+.sp-logo{animation:pop .9s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes pop{0%{transform:scale(.4) rotate(-10deg);opacity:0}60%{transform:scale(1.08) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+.sp-name{font-family:var(--serif);font-size:40px;font-weight:600;margin-top:18px;animation:up .7s .5s both}
+.sp-tag{font-size:14px;opacity:.9;margin-top:8px;letter-spacing:.02em;animation:up .7s .85s both}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .sv{break-inside:avoid;margin-bottom:12px;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 6px 16px rgba(43,27,23,.07)}
 .sv .cv{padding:14px;display:flex;align-items:flex-end;font-family:var(--serif);font-weight:600;font-size:16px;line-height:1.25}
 .sv .bd{padding:10px 12px 12px}
@@ -105,6 +117,13 @@ nav .plus{width:58px;height:58px;border-radius:50%;border:0;background:linear-gr
 </style>
 </head>
 <body>
+<div id="splash" onclick="hideSplash()">
+  <div>
+    <svg class="sp-logo" width="112" height="112" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#FAF5EC"/><path d="M24 8c-6.5 0-11 8.5-11 16a11 11 0 0 0 22 0c0-7.5-4.5-16-11-16z" fill="#5B2A4E"/><path d="M13.5 25l4.5-3.5 3.5 3.5 3-3.5 4 3.5 4-3" stroke="#FAF5EC" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="24" cy="15.5" r="2.6" fill="#E3B04B"/></svg>
+    <div class="sp-name">Idea Hatch</div>
+    <div class="sp-tag">You have the idea. Let's help you see it.</div>
+  </div>
+</div>
 <header>
   <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#5B2A4E"/><path d="M24 8c-6.5 0-11 8.5-11 16a11 11 0 0 0 22 0c0-7.5-4.5-16-11-16z" fill="#fff"/><path d="M13.5 25l4.5-3.5 3.5 3.5 3-3.5 4 3.5 4-3" stroke="#5B2A4E" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="24" cy="15.5" r="2.6" fill="#E3B04B"/></svg>
   <div class="brand">Idea Hatch</div>
@@ -270,16 +289,16 @@ var GUIDES = [
 var INTERESTS = ["Fashion", "Business", "Art and design", "Writing", "Film", "Food", "Other"];
 var STARTERS = ["A fashion brand", "A short film", "A cafe", "A book cover"];
 var SPARKS = [
-  { t: "A virtual fashion gallery", tag: "Fashion", c: ["#2B1B17", "#8A3F6B", "#E3B04B"], h: 190 },
-  { t: "A heritage cafe with a modern twist", tag: "Food", c: ["#D9663A", "#F4D4C8", "#FAF5EC"], h: 150 },
-  { t: "An Afrofuturist short film poster", tag: "Film", c: ["#1B2A49", "#5B2A4E", "#E3B04B"], h: 210 },
-  { t: "A calm interior for a small flat", tag: "Interiors", c: ["#7FA38A", "#F3EAD9", "#C9B79C"], h: 160 },
-  { t: "A skincare brand for deep skin tones", tag: "Beauty", c: ["#8B4A2B", "#E8B58F", "#FAF5EC"], h: 200 },
-  { t: "A podcast cover that feels like late night radio", tag: "Audio", c: ["#2D1E5F", "#C2527A", "#F4D4C8"], h: 170 },
-  { t: "A streetwear drop inspired by Lagos markets", tag: "Fashion", c: ["#E3B04B", "#D9663A", "#2B1B17"], h: 190 },
-  { t: "Wedding colours that feel rich but relaxed", tag: "Events", c: ["#5B2A4E", "#E3B04B", "#F4D4C8"], h: 150 },
-  { t: "A children's book about a brave little fish", tag: "Books", c: ["#2E86AB", "#F6C85F", "#F4D4C8"], h: 180 },
-  { t: "A plant-based bakery brand", tag: "Food", c: ["#8CB369", "#F4E285", "#BC4B51"], h: 160 }
+  { t: "A virtual fashion gallery", p: "elegant fashion art gallery interior with sculptural garments on pedestals, warm museum lighting, editorial photo, no text", tag: "Fashion", c: ["#2B1B17", "#8A3F6B", "#E3B04B"], h: 190 },
+  { t: "A heritage cafe with a modern twist", p: "cozy modern cafe with African heritage patterns, terracotta tones, morning light, styled coffee table, editorial photo, no text", tag: "Food", c: ["#D9663A", "#F4D4C8", "#FAF5EC"], h: 150 },
+  { t: "An Afrofuturist short film poster", p: "afrofuturist cinematic scene, glowing city skyline at dusk, deep purple and gold palette, dramatic lighting, movie still, no text", tag: "Film", c: ["#1B2A49", "#5B2A4E", "#E3B04B"], h: 210 },
+  { t: "A calm interior for a small flat", p: "calm minimalist small apartment living room, sage green accents, natural light, soft textures, interior photography, no text", tag: "Interiors", c: ["#7FA38A", "#F3EAD9", "#C9B79C"], h: 160 },
+  { t: "A skincare brand for deep skin tones", p: "luxury skincare products on warm brown stone, golden light, cream and amber tones, product photography, no text", tag: "Beauty", c: ["#8B4A2B", "#E8B58F", "#FAF5EC"], h: 200 },
+  { t: "A podcast cover that feels like late night radio", p: "vintage microphone and glowing radio at night, purple and rose haze, moody album art style, no text", tag: "Audio", c: ["#2D1E5F", "#C2527A", "#F4D4C8"], h: 170 },
+  { t: "A streetwear drop inspired by Lagos markets", p: "vibrant streetwear flat lay with bold printed fabrics, market colours of gold and orange, urban editorial photo, no text", tag: "Fashion", c: ["#E3B04B", "#D9663A", "#2B1B17"], h: 190 },
+  { t: "Wedding colours that feel rich but relaxed", p: "elegant wedding table setting with plum, gold and blush flowers, soft evening light, event photography, no text", tag: "Events", c: ["#5B2A4E", "#E3B04B", "#F4D4C8"], h: 150 },
+  { t: "A children's book about a brave little fish", p: "whimsical storybook illustration of a brave little fish in a bright blue sea, warm yellow accents, no text", tag: "Books", c: ["#2E86AB", "#F6C85F", "#F4D4C8"], h: 180 },
+  { t: "A plant-based bakery brand", p: "rustic plant-based bakery display with fresh bread and pastries, green and warm yellow tones, bright natural light, food photography, no text", tag: "Food", c: ["#8CB369", "#F4E285", "#BC4B51"], h: 160 }
 ];
 
 function face(x, y, grin){
@@ -433,8 +452,16 @@ function renderHome(){
 }
 function renderSparks(){
   $("sparks").innerHTML = SPARKS.map(function(s, i){
-    return '<button class="tile" style="min-height:' + s.h + 'px;background:' + gradient(s.c) + ';color:' + inkOn(s.c[0]) + '" onclick="useSpark(' + i + ')"><small>' + esc(s.tag) + '</small>' + esc(s.t) + '</button>';
+    return '<button class="tile" style="min-height:' + s.h + 'px;background:' + gradient(s.c) + '" onclick="useSpark(' + i + ')">' +
+      '<img class="ph" id="ph' + i + '" alt="" onload="this.classList.add(\'on\')" onerror="this.remove()">' +
+      '<span class="scrim"></span><small>' + esc(s.tag) + '</small><span class="tt">' + esc(s.t) + '</span></button>';
   }).join("");
+  SPARKS.forEach(function(s, i){
+    setTimeout(function(){
+      var im = $("ph" + i);
+      if (im) { im.src = "https://image.pollinations.ai/prompt/" + encodeURIComponent(s.p) + "?width=480&height=" + (s.h * 3) + "&nologo=true&seed=" + (i + 11); }
+    }, i * 500);
+  });
 }
 function useSpark(i){
   $("idea").value = SPARKS[i].t;
@@ -803,6 +830,14 @@ function resetIdea(){
 }
 
 /* ---------- start ---------- */
+function hideSplash(){
+  var sp = $("splash");
+  if (!sp || sp.classList.contains("out")) { return; }
+  sp.classList.add("out");
+  setTimeout(function(){ sp.style.display = "none"; }, 700);
+}
+setTimeout(hideSplash, 3000);
+
 function init(){
   if (user && user.started) { setupApp(); } else { obGo(0); }
   loadConfig().then(function(){
