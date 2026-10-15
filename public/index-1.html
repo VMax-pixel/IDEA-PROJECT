@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6C4CF1">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
+<title>Idea Hatch</title>
+<style>
+:root{--p:#6C4CF1;--p2:#9B5CF6;--bg:#FFF8F1;--card:#fff;--ink:#2B2140;--muted:#7A6F8F;--line:#EFE4D8;--coral:#E5533D;--sun:#FFC857;--mint:#4CC9A7}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:rgba(255,248,241,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:10px}
+header b{font-size:18px;flex:1}
+#hdrAv{background:none;border:0;padding:0;display:none}
+#hdrAv.on{display:block}
+.wrap{max-width:640px;margin:0 auto;padding:16px}
+.screen{display:none}
+.screen.on{display:block}
+h1{font-size:28px;line-height:1.2;margin:10px 0}
+h2{font-size:22px;margin:6px 0}
+p{line-height:1.5}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.center{text-align:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:14px;box-shadow:0 4px 14px rgba(43,33,64,.06)}
+.tag{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--coral)}
+.pad{margin-top:20px}
+textarea,input{width:100%;padding:13px;font-size:16px;border:1.5px solid var(--line);border-radius:14px;font-family:inherit;margin-top:6px;background:#fff;color:var(--ink)}
+textarea:focus,input:focus{outline:none;border-color:var(--p)}
+.btn{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:0;padding:13px 20px;font-size:16px;border-radius:14px;font-weight:700;margin-top:12px;box-shadow:0 6px 16px rgba(108,76,241,.3)}
+.btn.ghost{background:#fff;color:var(--p);border:1.5px solid var(--p);box-shadow:none}
+.btn.small{padding:9px 16px;font-size:14px}
+.btn.wide{width:100%}
+.link{background:none;border:0;color:var(--muted);font-size:14px;padding:12px 6px;margin-top:12px;text-decoration:underline}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.q{display:block;margin-top:12px;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px;color:var(--ink)}
+.chip.on{background:var(--p);border-color:var(--p);color:#fff}
+.av{flex:none;animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.say{display:flex;gap:10px;align-items:flex-end}
+.bubble{background:#fff;border:1px solid var(--line);border-radius:18px 18px 18px 6px;padding:12px 14px;line-height:1.45;box-shadow:0 3px 10px rgba(43,33,64,.06);flex:1}
+.hero2{background:linear-gradient(135deg,#FFE3CF,#E6DBFF);border-radius:24px;padding:16px}
+.hero2 .bubble{border:0}
+.hero{background:linear-gradient(160deg,#FFE3CF,#E6DBFF 60%,#D6F5EA);border-radius:28px;padding:26px 18px;text-align:center}
+.avrow{display:flex;justify-content:center;gap:4px;margin:14px 0 4px}
+.guides{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.gbtn{background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px 8px;text-align:center;color:var(--ink)}
+.gbtn.on{border-color:var(--p);box-shadow:0 0 0 3px rgba(108,76,241,.15)}
+.gbtn b{display:block;margin-top:4px}
+.gbtn span{font-size:12px;color:var(--muted)}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:16px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--p);width:22px;border-radius:6px}
+.obstep{display:none}
+.obstep.on{display:block}
+.pal{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.sw{width:54px;text-align:center;font-size:10px;color:var(--muted)}
+.sw span{display:block;height:44px;border-radius:12px;border:1px solid rgba(0,0,0,.08);margin-bottom:3px}
+.imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.cell{aspect-ratio:1/1;background:#F3ECFF;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--muted);padding:4px}
+.cell img{width:100%;height:100%;object-fit:cover;display:block}
+.dir{border-top-width:6px;border-top-style:solid}
+.err{border-color:#f3b4b4;background:#fff5f5}
+.think{display:flex;gap:10px;align-items:flex-end;margin-top:16px}
+.dots3 i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--p);margin-left:4px;animation:blink 1.2s infinite}
+.dots3 i:nth-child(2){animation-delay:.2s}
+.dots3 i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:none;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav.on{display:flex}
+nav button{flex:1;background:none;border:0;padding:10px 2px 8px;font-size:12px;color:var(--muted);font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button.on{color:var(--p)}
+.sheet{position:fixed;inset:0;background:rgba(43,33,64,.5);display:none;align-items:flex-end;z-index:20}
+.sheet.on{display:flex}
+.sheet-card{background:#fff;width:100%;max-width:640px;margin:0 auto;border-radius:26px 26px 0 0;padding:18px;padding-bottom:calc(18px + env(safe-area-inset-bottom));animation:slide .25s ease-out}
+@keyframes slide{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+</style>
+</head>
+<body>
+<header>
+  <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#6C4CF1"/><path d="M24 8c-6.5 0-11 8.5-11 16a11 11 0 0 0 22 0c0-7.5-4.5-16-11-16z" fill="#fff"/><path d="M13.5 25l4.5-3.5 3.5 3.5 3-3.5 4 3.5 4-3" stroke="#6C4CF1" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="24" cy="15.5" r="2.6" fill="#FFC857"/></svg>
+  <b>Idea Hatch</b>
+  <button id="hdrAv" onclick="go('me')" aria-label="My guide"></button>
+</header>
+
+<div class="wrap">
+
+<section id="onboard" class="screen">
+  <div id="ob0" class="obstep">
+    <div class="hero">
+      <div class="avrow" id="obAvs"></div>
+      <h1>You have the idea.<br>Let's help you see it.</h1>
+      <p class="muted">Your messy thoughts are welcome here. A friendly AI guide will help you shape them, one easy question at a time.</p>
+    </div>
+    <button class="btn wide" onclick="obGo(1)">Get started</button>
+    <p class="center muted small">Takes about 20 seconds. No sign-up needed to try it.</p>
+  </div>
+
+  <div id="ob1" class="obstep">
+    <h2>How it works</h2>
+    <div class="card"><div class="tag">1. Tell</div><p>Say what's in your head, even if it's rough or half-formed.</p></div>
+    <div class="card"><div class="tag">2. Shape</div><p>Your guide asks a few easy questions, and each answer makes your idea sharper.</p></div>
+    <div class="card"><div class="tag">3. See</div><p>Get creative directions with colour palettes and reference images to react to.</p></div>
+    <button class="btn wide" onclick="obGo(2)">Next</button>
+  </div>
+
+  <div id="ob2" class="obstep">
+    <h2>Pick your AI guide</h2>
+    <p class="muted">They'll chat with you and ask the questions. You can change this any time.</p>
+    <div class="guides" id="guideGrid"></div>
+    <p class="center muted" id="guideLine"></p>
+    <button class="btn wide" onclick="obGo(3)">Next</button>
+  </div>
+
+  <div id="ob3" class="obstep">
+    <h2>Almost there</h2>
+    <label class="q">What should your guide call you?</label>
+    <input id="nameIn" placeholder="Your name" autocomplete="given-name">
+    <label class="q">What kind of ideas do you shape? (optional)</label>
+    <div class="chips" id="interestChips"></div>
+    <button class="btn wide" onclick="finishOnboarding()">Start shaping ideas</button>
+    <p class="center muted small">Your profile and ideas are saved on this device. Cloud accounts are coming next.</p>
+  </div>
+
+  <div class="dots" id="obDots"></div>
+</section>
+
+<section id="create" class="screen">
+  <div class="hero2">
+    <div class="say"><span id="heroAv"></span><div class="bubble" id="heroMsg"></div></div>
+  </div>
+  <div class="card">
+    <textarea id="idea" rows="4" placeholder="Type or paste what's in your head..."></textarea>
+    <div class="small muted" style="margin-top:10px">Need a spark? Try one:</div>
+    <div class="chips" id="starters"></div>
+    <button class="btn wide" onclick="startIdea()">Shape my idea</button>
+  </div>
+  <div id="result"></div>
+</section>
+
+<section id="saved" class="screen">
+  <h2>My ideas</h2>
+  <div id="savedList"></div>
+</section>
+
+<section id="me" class="screen">
+  <h2>Me</h2>
+  <div class="card center" id="meCard"></div>
+</section>
+
+<section id="about" class="screen">
+  <h2>How it works</h2>
+  <div class="card"><div class="tag">1. Tell</div><p>Describe your idea, even if it's rough.</p></div>
+  <div class="card"><div class="tag">2. Shape</div><p>Answer your guide's questions. Each round makes the picture of your idea sharper.</p></div>
+  <div class="card"><div class="tag">3. See</div><p>Get creative directions with colour palettes and reference images you can react to.</p></div>
+  <h2 style="margin-top:22px">Why it's different</h2>
+  <div class="card"><p><b>It starts where you are.</b> You don't need a perfect prompt. You start with a feeling or a rough thought.</p></div>
+  <div class="card"><p><b>It guides you.</b> Instead of an open chat box, your guide asks one easy question at a time and builds on your answers.</p></div>
+  <div class="card"><p><b>It shows, not just tells.</b> You get palettes and images to react to, so you can say "more like this" instead of searching for words.</p></div>
+  <div class="card"><p><b>Your ideas stay organised.</b> Save them and come back to keep shaping.</p></div>
+  <p class="center muted small">Built with AI. Your guide is an AI character, not a person.</p>
+</section>
+
+</div>
+
+<nav id="nav">
+  <button id="t-create" onclick="go('create')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Create</button>
+  <button id="t-saved" onclick="go('saved')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"/></svg>My ideas</button>
+  <button id="t-me" onclick="go('me')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 15-5 16 0"/></svg>Me</button>
+  <button id="t-about" onclick="go('about')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>About</button>
+</nav>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-card">
+    <div class="say"><span id="sheetAv"></span><div class="bubble" id="sheetQ"></div></div>
+    <div class="small muted" id="sheetStep" style="margin-top:10px"></div>
+    <textarea id="sheetA" rows="3" placeholder="Type your answer..."></textarea>
+    <div class="row">
+      <button class="btn" id="btnNext" onclick="sheetNext()">Next</button>
+      <button class="btn ghost" onclick="sheetNotSure()">Not sure yet</button>
+      <button class="link" onclick="closeSheet()">Later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
+function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+var GUIDES = [
+  { id: "spark", name: "Spark", vibe: "Upbeat and curious", line: "Let's chase that idea!" },
+  { id: "nimbus", name: "Nimbus", vibe: "Calm and patient", line: "No rush. Messy is welcome here." },
+  { id: "nova", name: "Nova", vibe: "Bold and playful", line: "Let's make something wild." },
+  { id: "bloop", name: "Bloop", vibe: "Gentle and encouraging", line: "You're doing great. Tell me more." }
+];
+var INTERESTS = ["Fashion", "Business", "Art and design", "Writing", "Film", "Food", "Other"];
+var STARTERS = ["A fashion brand", "A short film", "A cafe", "A book cover"];
+
+function face(x, y, grin){
+  var mouth = grin
+    ? '<path d="M' + (x - 10) + ' ' + (y + 8) + ' Q' + x + ' ' + (y + 24) + ' ' + (x + 10) + ' ' + (y + 8) + ' Z" fill="#2B2140"/>'
+    : '<path d="M' + (x - 10) + ' ' + (y + 8) + ' Q' + x + ' ' + (y + 20) + ' ' + (x + 10) + ' ' + (y + 8) + '" stroke="#2B2140" stroke-width="4" fill="none" stroke-linecap="round"/>';
+  return '<circle cx="' + (x - 11) + '" cy="' + y + '" r="5" fill="#2B2140"/><circle cx="' + (x + 11) + '" cy="' + y + '" r="5" fill="#2B2140"/>' +
+    '<circle cx="' + (x - 9.5) + '" cy="' + (y - 1.5) + '" r="1.6" fill="#fff"/><circle cx="' + (x + 12.5) + '" cy="' + (y - 1.5) + '" r="1.6" fill="#fff"/>' +
+    '<circle cx="' + (x - 20) + '" cy="' + (y + 10) + '" r="5" fill="#FF8F7A" opacity=".55"/><circle cx="' + (x + 20) + '" cy="' + (y + 10) + '" r="5" fill="#FF8F7A" opacity=".55"/>' + mouth;
+}
+var BODY = {
+  spark: '<circle cx="50" cy="42" r="31" fill="#FFC857"/><rect x="37" y="68" width="26" height="14" rx="6" fill="#F4A940"/><rect x="42" y="84" width="16" height="7" rx="3.5" fill="#C98A2B"/>' + face(50, 42, false),
+  nimbus: '<g fill="#B6C2FF"><circle cx="33" cy="56" r="19"/><circle cx="52" cy="44" r="25"/><circle cx="73" cy="57" r="18"/><rect x="22" y="56" width="64" height="21" rx="10.5"/></g>' + face(54, 54, false),
+  nova: '<polygon points="50.0,10.0 62.3,37.0 91.8,40.4 70.0,60.5 75.9,89.6 50.0,75.0 24.1,89.6 30.0,60.5 8.2,40.4 37.7,37.0" fill="#FF8A65" stroke="#FF8A65" stroke-width="6" stroke-linejoin="round"/>' + face(50, 50, true),
+  bloop: '<path d="M50 14c19 0 35 13 35 33 0 23-15 41-35 41S15 70 15 47c0-20 16-33 35-33z" fill="#4CC9A7"/>' + face(50, 50, false)
+};
+function avatar(id, size){
+  return '<svg class="av" width="' + size + '" height="' + size + '" viewBox="0 0 100 100" aria-hidden="true">' + (BODY[id] || BODY.spark) + '</svg>';
+}
+function guideOf(id){
+  for (var i = 0; i < GUIDES.length; i++) { if (GUIDES[i].id === id) { return GUIDES[i]; } }
+  return GUIDES[0];
+}
+
+var user = load("iw_user", null) || {};
+var draft = { guide: "spark", interest: "", name: "" };
+var state = { id: null, idea: "", qa: [], result: null, round: 0 };
+var obStep = 0;
+
+function go(tab){
+  ["onboard","create","saved","me","about"].forEach(function(n){ $(n).classList.remove("on"); });
+  ["create","saved","me","about"].forEach(function(n){ $("t-" + n).classList.remove("on"); });
+  $(tab).classList.add("on");
+  if ($("t-" + tab)) { $("t-" + tab).classList.add("on"); }
+  if (tab === "saved") { renderSaved(); }
+  if (tab === "me") { renderMe(); }
+  window.scrollTo(0, 0);
+}
+
+function guideGridHTML(selected, handler){
+  return GUIDES.map(function(g){
+    return '<button class="gbtn' + (g.id === selected ? ' on' : '') + '" onclick="' + handler + '(\'' + g.id + '\')">' + avatar(g.id, 64) + '<b>' + g.name + '</b><span>' + g.vibe + '</span></button>';
+  }).join("");
+}
+
+function obGo(n){
+  obStep = n;
+  for (var i = 0; i < 4; i++) { $("ob" + i).classList.remove("on"); }
+  $("ob" + n).classList.add("on");
+  var d = "";
+  for (var j = 0; j < 4; j++) { d += '<i' + (j === n ? ' class="on"' : '') + '></i>'; }
+  $("obDots").innerHTML = d;
+  if (n === 0) { $("obAvs").innerHTML = GUIDES.map(function(g){ return avatar(g.id, 62); }).join(""); }
+  if (n === 2) { renderGuideStep(); }
+  if (n === 3) { renderInterestChips(); }
+  window.scrollTo(0, 0);
+}
+
+function renderGuideStep(){
+  $("guideGrid").innerHTML = guideGridHTML(draft.guide, "pickGuide");
+  var g = guideOf(draft.guide);
+  $("guideLine").textContent = g.name + ": \"" + g.line + "\"";
+}
+function pickGuide(id){ draft.guide = id; renderGuideStep(); }
+
+function renderInterestChips(){
+  $("interestChips").innerHTML = INTERESTS.map(function(t, i){
+    return '<button class="chip' + (draft.interest === t ? ' on' : '') + '" onclick="pickInterest(' + i + ')">' + esc(t) + '</button>';
+  }).join("");
+}
+function pickInterest(i){
+  draft.interest = (draft.interest === INTERESTS[i]) ? "" : INTERESTS[i];
+  renderInterestChips();
+}
+
+function finishOnboarding(){
+  draft.name = $("nameIn").value.trim();
+  user = { started: true, name: draft.name, guide: draft.guide, interest: draft.interest };
+  store("iw_user", user);
+  setupApp();
+}
+
+function setupApp(){
+  $("nav").classList.add("on");
+  $("hdrAv").classList.add("on");
+  refreshGuideUI();
+  renderStarters();
+  go("create");
+}
+
+function refreshGuideUI(){
+  var g = guideOf(user.guide);
+  $("hdrAv").innerHTML = avatar(g.id, 38);
+  $("heroAv").innerHTML = avatar(g.id, 64);
+  var hi = user.name ? "Hi " + user.name + "! " : "Hi! ";
+  $("heroMsg").textContent = hi + "I'm " + g.name + ". " + g.line + " Tell me what's in your head. Messy is fine.";
+}
+
+function renderStarters(){
+  $("starters").innerHTML = STARTERS.map(function(t, i){
+    return '<button class="chip" onclick="useStarter(' + i + ')">' + esc(t) + '</button>';
+  }).join("");
+}
+function useStarter(i){
+  $("idea").value = STARTERS[i];
+}
+
+function renderMe(){
+  var g = guideOf(user.guide);
+  $("meCard").innerHTML = avatar(g.id, 90) +
+    '<h2>' + esc(user.name || "Friend") + '</h2><p class="muted">Your guide is ' + esc(g.name) + '. ' + esc(g.vibe) + '.</p>' +
+    '<div class="guides">' + guideGridHTML(g.id, "pickGuideMe") + '</div>' +
+    '<label class="q" style="text-align:left">Your name</label><input id="meName" value="' + esc(user.name || "") + '">' +
+    '<button class="btn wide" onclick="saveMe()">Save</button>' +
+    '<button class="link" onclick="resetProfile()">Reset my profile</button>' +
+    '<p class="muted small">Your profile and ideas live on this device. Cloud accounts are coming next.</p>';
+}
+function pickGuideMe(id){
+  user.guide = id;
+  store("iw_user", user);
+  refreshGuideUI();
+  renderMe();
+}
+function saveMe(){
+  user.name = $("meName").value.trim();
+  store("iw_user", user);
+  refreshGuideUI();
+  renderMe();
+}
+function resetProfile(){
+  user = {};
+  store("iw_user", {});
+  $("nav").classList.remove("on");
+  $("hdrAv").classList.remove("on");
+  go("onboard");
+  obGo(0);
+}
+
+function startIdea(){
+  var idea = $("idea").value.trim();
+  if (!idea) { $("result").innerHTML = '<div class="card err">Please describe your idea first.</div>'; return; }
+  state = { id: null, idea: idea, qa: [], result: null, round: 0 };
+  return callShape();
+}
+
+async function callShape(){
+  var out = $("result"), g = guideOf(user.guide);
+  out.innerHTML = '<div class="think">' + avatar(g.id, 56) + '<div class="bubble">' + esc(g.name) + ' is thinking<span class="dots3"><i></i><i></i><i></i></span></div></div>';
+  try {
+    var r = await fetch("/shape", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idea: state.idea, answers: state.qa, guide: g.id, profile: { name: user.name || "", interest: user.interest || "" } })
+    });
+    var data = await r.json();
+    if (data.error) { showErr(data.error); return; }
+    state.result = data;
+    state.round += 1;
+    render();
+    if (data.questions && data.questions.length) { setTimeout(openSheet, 500); }
+  } catch (e) {
+    showErr("Something went wrong. Please check your connection and try again.");
+  }
+}
+
+function showErr(msg){
+  $("result").innerHTML = '<div class="card err">' + esc(msg) + '<div class="row"><button class="btn small" onclick="callShape()">Try again</button></div></div>';
+}
+
+function render(){
+  var r = state.result, out = $("result"), h = "", g = guideOf(user.guide);
+  if (!r) { out.innerHTML = ""; return; }
+  h += '<div class="card"><div class="tag">Round ' + state.round + '</div><div class="say" style="margin-top:8px">' + avatar(g.id, 52) + '<div class="bubble">' + esc(r.summary || state.idea) + '</div></div></div>';
+  if (r.questions && r.questions.length) {
+    h += '<div class="card"><div class="say">' + avatar(g.id, 52) + '<div class="bubble">I have ' + r.questions.length + ' quick question' + (r.questions.length > 1 ? 's' : '') + ' for you.</div></div>' +
+      '<div class="row"><button class="btn" onclick="openSheet()">Answer ' + esc(g.name) + '</button><button class="btn ghost" onclick="skipQuestions()">Skip</button></div></div>';
+  }
+  h += '<div class="tag pad">Creative directions</div>';
+  r.directions.forEach(function(d, i){
+    var top = (d.palette && d.palette.length) ? d.palette[0] : "#6C4CF1";
+    h += '<div class="card dir" style="border-top-color:' + top + '"><b>' + esc(d.name) + '</b><p>' + esc(d.text) + '</p>';
+    if (d.palette && d.palette.length) {
+      h += '<div class="pal">' + d.palette.map(function(c){
+        return '<div class="sw"><span style="background:' + c + '"></span>' + c + '</div>';
+      }).join("") + '</div>';
+    }
+    h += '<button class="btn small" onclick="showImages(' + i + ')">Show me</button><div class="imgs" id="imgs' + i + '"></div></div>';
+  });
+  h += '<div class="row"><button class="btn" id="saveBtn" onclick="saveIdea()">Save this idea</button><button class="btn ghost" onclick="resetIdea()">Start over</button></div>';
+  out.innerHTML = h;
+}
+
+var sheetIdx = 0, sheetAns = [];
+function openSheet(){
+  var qs = state.result && state.result.questions;
+  if (!qs || !qs.length) { return; }
+  sheetIdx = 0;
+  sheetAns = [];
+  showStep();
+  $("sheet").classList.add("on");
+}
+function showStep(){
+  var qs = state.result.questions, g = guideOf(user.guide);
+  $("sheetAv").innerHTML = avatar(g.id, 60);
+  $("sheetQ").textContent = qs[sheetIdx];
+  $("sheetStep").textContent = "Question " + (sheetIdx + 1) + " of " + qs.length;
+  $("sheetA").value = "";
+  $("btnNext").textContent = (sheetIdx === qs.length - 1) ? "Update my idea" : "Next";
+}
+function advance(){
+  var qs = state.result.questions;
+  if (sheetIdx < qs.length - 1) { sheetIdx += 1; showStep(); } else { return finishSheet(); }
+}
+function sheetNext(){ sheetAns.push($("sheetA").value.trim()); return advance(); }
+function sheetNotSure(){ sheetAns.push("I'm not sure yet"); return advance(); }
+function closeSheet(){ $("sheet").classList.remove("on"); }
+function finishSheet(){
+  var qs = state.result.questions, added = 0;
+  qs.forEach(function(q, i){
+    var a = sheetAns[i];
+    if (a) { state.qa.push({ q: q, a: a }); added += 1; }
+  });
+  closeSheet();
+  if (added) { return callShape(); }
+}
+
+function skipQuestions(){
+  state.result.questions = [];
+  render();
+}
+
+function showImages(i){
+  var d = state.result.directions[i], box = $("imgs" + i);
+  var style = String(d.name || "").replace(/^[A-C]: /, "");
+  var prompts = (d.images && d.images.length) ? d.images : [d.text];
+  box.innerHTML = "";
+  prompts.forEach(function(p, k){
+    var cell = document.createElement("div");
+    cell.className = "cell";
+    cell.textContent = "Creating...";
+    box.appendChild(cell);
+    setTimeout(function(){
+      var img = new Image();
+      var q = (p + ". Style: " + style).slice(0, 380);
+      img.alt = p;
+      img.onload = function(){ cell.textContent = ""; cell.appendChild(img); };
+      img.onerror = function(){ cell.textContent = "Busy. Tap Show me again."; };
+      img.src = "https://image.pollinations.ai/prompt/" + encodeURIComponent(q) + "?width=512&height=512&nologo=true&seed=" + Math.floor(Math.random() * 100000);
+    }, k * 1200);
+  });
+}
+
+function saveIdea(){
+  var list = load("iw_ideas", []);
+  var item = { id: state.id || String(Date.now()), idea: state.idea, qa: state.qa, result: state.result, round: state.round, date: new Date().toISOString().slice(0, 10) };
+  state.id = item.id;
+  var found = false;
+  list = list.map(function(x){ if (x.id === item.id) { found = true; return item; } return x; });
+  if (!found) { list.unshift(item); }
+  store("iw_ideas", list);
+  var btn = $("saveBtn");
+  if (btn) { btn.textContent = "Saved"; }
+}
+
+function renderSaved(){
+  var list = load("iw_ideas", []), box = $("savedList");
+  if (!list.length) { box.innerHTML = '<div class="card"><p class="muted">No saved ideas yet. Shape an idea and tap Save this idea.</p></div>'; return; }
+  box.innerHTML = list.map(function(x, i){
+    var title = (x.result && x.result.summary) ? x.result.summary : x.idea;
+    return '<div class="card"><div class="tag">' + esc(x.date) + ' &middot; round ' + esc(x.round) + '</div><p>' + esc(title.slice(0, 140)) + '</p><div class="row"><button class="btn small" onclick="openIdea(' + i + ')">Open</button><button class="btn small ghost" onclick="deleteIdea(' + i + ')">Delete</button></div></div>';
+  }).join("");
+}
+
+function openIdea(i){
+  var x = load("iw_ideas", [])[i];
+  if (!x) { return; }
+  state = { id: x.id, idea: x.idea, qa: x.qa || [], result: x.result, round: x.round || 1 };
+  $("idea").value = x.idea;
+  go("create");
+  render();
+}
+
+function deleteIdea(i){
+  var list = load("iw_ideas", []);
+  list.splice(i, 1);
+  store("iw_ideas", list);
+  renderSaved();
+}
+
+function resetIdea(){
+  state = { id: null, idea: "", qa: [], result: null, round: 0 };
+  $("idea").value = "";
+  $("result").innerHTML = "";
+  window.scrollTo(0, 0);
+}
+
+function init(){
+  if (user && user.started) {
+    setupApp();
+  } else {
+    go("onboard");
+    obGo(0);
+  }
+}
+init();
+</script>
+</body>
+</html>
