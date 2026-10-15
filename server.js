@@ -122,6 +122,11 @@ function cleanResult(raw) {
   };
 }
 
+function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+function isBusy(e) {
+  return e.status === 503 || e.status === 429 || /high demand|overloaded|unavailable|quota|rate/i.test(e.message || "");
+}
+
 async function askGemini(key, model, systemText, userText) {
   const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent", {
     method: "POST",
@@ -137,6 +142,7 @@ async function askGemini(key, model, systemText, userText) {
     console.log(JSON.stringify(data));
     const err = new Error((data.error && data.error.message) || String(r.status));
     err.api = true;
+    err.status = r.status;
     throw err;
   }
   let text = data.candidates[0].content.parts.map((p) => p.text || "").join("").trim();
@@ -164,18 +170,26 @@ app.post("/shape", async (req, res) => {
       "Q: " + String((a && a.q) || "").slice(0, 300) + "\nA: " + String((a && a.a) || "").slice(0, 500)
     ).join("\n");
   }
+  const fallback = process.env.GEMINI_FALLBACK_MODEL || "gemini-flash-lite-latest";
+  const plan = [{ m: model, tries: 3 }];
+  if (fallback !== model) plan.push({ m: fallback, tries: 2 });
+  const system = buildSystem(guideId);
   let lastErr;
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try {
-      return res.json(await askGemini(key, model, buildSystem(guideId), userText));
-    } catch (e) {
-      lastErr = e;
-      console.log("attempt " + (attempt + 1) + " failed: " + e.message);
-      if (e.api) break;
+  for (const step of plan) {
+    for (let attempt = 0; attempt < step.tries; attempt++) {
+      try {
+        return res.json(await askGemini(key, step.m, system, userText));
+      } catch (e) {
+        lastErr = e;
+        console.log(step.m + " attempt " + (attempt + 1) + " failed: " + e.message);
+        if (e.api && !isBusy(e)) break;
+        if (attempt < step.tries - 1) await sleep(1500 * (attempt + 1));
+      }
     }
   }
+  if (lastErr && isBusy(lastErr)) return res.json({ error: "The AI is very busy right now. Please tap Try again in a few seconds.", retry: true });
   if (lastErr && lastErr.api) return res.json({ error: "AI error: " + lastErr.message });
-  res.json({ error: "Something went wrong. Please try again." });
+  res.json({ error: "Something went wrong. Please try again.", retry: true });
 });
 
 const port = process.env.PORT || 3000;
