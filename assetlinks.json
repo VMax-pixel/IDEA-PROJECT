@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.onrender.idea_project_ku2v.twa",
+        "sha256_cert_fingerprints": ["7B:FE:BB:E8:33:08:8E:49:83:72:F7:46:F6:B1:B3:60:E5:B5:71:59:1E:D6:A2:E0:2F:80:52:00:8F:9D:FC:B8"]
+      }
+    }]
