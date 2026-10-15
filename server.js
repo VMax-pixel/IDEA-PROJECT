@@ -19,7 +19,7 @@ function chunk(type, data) {
   return Buffer.concat([len, t, data, crc]);
 }
 function makeIcon(size) {
-  const bg = [79, 70, 229], fg = [255, 255, 255];
+  const bg = [91, 42, 78], fg = [255, 255, 255];
   const row = size * 4 + 1;
   const raw = Buffer.alloc(row * size);
   for (let y = 0; y < size; y++) {
@@ -59,8 +59,8 @@ app.get("/manifest.json", (req, res) => res.json({
   scope: "/",
   display: "standalone",
   orientation: "portrait",
-  background_color: "#FFF8F1",
-  theme_color: "#6C4CF1",
+  background_color: "#FAF5EC",
+  theme_color: "#5B2A4E",
   icons: [
     { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
     { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
@@ -74,6 +74,21 @@ app.get("/icon-512.png", (req, res) => { res.type("image/png"); res.send(icon512
 app.get("/sw.js", (req, res) => {
   res.type("application/javascript");
   res.send('self.addEventListener("install", function(){ self.skipWaiting(); });self.addEventListener("fetch", function(){});');
+});
+
+app.get("/config", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json({
+    supabaseUrl: process.env.SUPABASE_URL || "",
+    supabaseKey: process.env.SUPABASE_ANON_KEY || ""
+  });
+});
+
+app.get("/.well-known/assetlinks.json", (req, res) => {
+  res.type("application/json");
+  res.sendFile(path.join(__dirname, "assetlinks.json"), (err) => {
+    if (err) res.status(404).json([]);
+  });
 });
 
 app.use(express.static(path.join(__dirname, "public")));
