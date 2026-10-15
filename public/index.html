@@ -357,14 +357,18 @@ async function callShape(){
       body: JSON.stringify({ idea: state.idea, answers: state.qa, guide: g.id, profile: { name: user.name || "", interest: user.interest || "" } })
     });
     var data = await r.json();
-    if (data.error) { out.innerHTML = '<div class="card err">' + esc(data.error) + '</div>'; return; }
+    if (data.error) { showErr(data.error); return; }
     state.result = data;
     state.round += 1;
     render();
     if (data.questions && data.questions.length) { setTimeout(openSheet, 500); }
   } catch (e) {
-    out.innerHTML = '<div class="card err">Something went wrong. Please try again.</div>';
+    showErr("Something went wrong. Please check your connection and try again.");
   }
+}
+
+function showErr(msg){
+  $("result").innerHTML = '<div class="card err">' + esc(msg) + '<div class="row"><button class="btn small" onclick="callShape()">Try again</button></div></div>';
 }
 
 function render(){
